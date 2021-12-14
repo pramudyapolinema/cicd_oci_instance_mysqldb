@@ -70,6 +70,7 @@ jobs:
             --wait-for-state SUCCEEDED \
             --query "data.id" \
             --raw-output \
+            --data-storage-size-in-gbs 50 \
             )" >> $GITHUB_ENV
 
       - name: 'Check Existing Instance'
