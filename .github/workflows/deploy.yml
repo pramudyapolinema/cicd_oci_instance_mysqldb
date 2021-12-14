@@ -60,8 +60,8 @@ jobs:
         run: |
           echo "MySQL_OCID=$( \
             oci mysql db-system create \
-            --admin-password ${{ secrets.DB_USERNAME }} \
-            --admin-username ${{ secrets.DB_PASSWORD }} \
+            --admin-password ${{ secrets.DB_PASSWORD }} \
+            --admin-username ${{ secrets.DB_USERNAME }} \
             -c ${{secrets.VM_COMPARTMENT_OCID}} \
             --availability-domain ${{secrets.VM_AVAILABILITY_DOMAIN}} \
             --shape-name MySQL.VM.Standard.E3.1.8GB \
