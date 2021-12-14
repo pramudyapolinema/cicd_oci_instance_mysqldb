@@ -2,9 +2,9 @@ FROM php:7.4-apache
 
 WORKDIR /var/www/html
 
-RUN yum -y update
+RUN apt update
 
-RUN yum -y update && yum -y install -y \
+RUN apt update && apt install -y \
         libpng-dev \
         zlib1g-dev \
         libxml2-dev \
