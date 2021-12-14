@@ -32,6 +32,6 @@ RUN a2dissite 000-default.conf; \
 
 COPY . .
 
-MKDIR /var/www/html/public/products
+RUN mkdir /var/www/html/public/products
 
 RUN chmod 777 /var/www/html/public/products
