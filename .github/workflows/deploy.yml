@@ -49,8 +49,8 @@ jobs:
         run: |
           echo "MySQL_IP=$( \
             oci mysql db-system list \
+            --compartment-id ${{secrets.OCI_TENANCY_OCID}} \
             --lifecycle-state ACTIVE \
-            --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
             --display-name pramudyapolinema_cicd \
             --query 'data[0].endpoint[0]."ip-address"' \
             --raw-output \
