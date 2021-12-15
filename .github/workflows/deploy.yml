@@ -139,6 +139,6 @@ jobs:
             sudo firewall-cmd --zone=docker --add-service=http --permanent
             sudo firewall-cmd --reload
             sudo docker-compose up -d
-            sudo ./laravel.sh
+            sudo docker-compose exec -T system_sales ./laravel.sh
 
 

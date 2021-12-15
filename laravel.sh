@@ -1,6 +1,7 @@
 #!/bin/bash
 
 docker exec -it system_sales bash -c "
+cp .env.example .env
 chmod -R 777 /var/www/html/storage/; \
 composer install; \
 php artisan key:generate; \
