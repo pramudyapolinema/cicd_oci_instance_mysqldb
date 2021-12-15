@@ -56,9 +56,9 @@ jobs:
             --raw-output \
             )" >> $GITHUB_ENV
       - name: 'Create MySQL Database'
-        if: ${{!env.MySQL_OCID}}
+        if: ${{!env.MySQL_IP}}
         run: |
-          echo "MySQL_OCID=$( \
+          echo "MySQL_IP=$( \
             oci mysql db-system create \
             --admin-password ${{ secrets.DB_PASSWORD }} \
             --admin-username ${{ secrets.DB_USERNAME }} \
@@ -68,27 +68,17 @@ jobs:
             --display-name pramudyapolinema_cicd \
             --subnet-id ${{secrets.VM_SUBNET_OCID}} \
             --wait-for-state SUCCEEDED \
-            --query "data.id" \
+            --query 'data[0].endpoints[0]."ip-address"' \
             --raw-output \
             --data-storage-size-in-gbs 50 \
             )" >> $GITHUB_ENV
-
       - name: 'Check Existing MySQL Database'
         run: |
-          echo "MySQL_OCID=$( \
+          echo "MySQL_IP=$( \
             oci mysql db-system list \
             --lifecycle-state ACTIVE \
             --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
             --display-name pramudyapolinema_cicd \
-            --query "data [0].endpoint [0].ip-address" \
-            --raw-output \
-            )" >> $GITHUB_ENV
-
-      - name: 'Get MySQL IP'
-        run: |
-          echo "MySQL_IP=$( \
-            oci mysql db-system list \
-            --compartment-id ${{env.MySQL_OCID}} \
             --query 'data[0].endpoints[0]."ip-address"' \
             --raw-output \
             )" >> $GITHUB_ENV
