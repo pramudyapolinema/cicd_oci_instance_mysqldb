@@ -122,7 +122,7 @@ jobs:
           host: ${{ env.INSTANCE_IP }}
           username: opc
           key: ${{ secrets.OCI_KEY_FILE }}
-          source: "*"
+          source: "docker-compose.yaml"
           target: "./"
 
       - name: 'Running Docker Compose'
