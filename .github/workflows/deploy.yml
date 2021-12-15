@@ -52,7 +52,7 @@ jobs:
             --lifecycle-state ACTIVE \
             --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
             --display-name pramudyapolinema_cicd \
-            --query "data [0].id" \
+            --query "data [0].endpoint [0].ip-address" \
             --raw-output \
             )" >> $GITHUB_ENV
       - name: 'Create MySQL Database'
@@ -73,16 +73,26 @@ jobs:
             --data-storage-size-in-gbs 50 \
             )" >> $GITHUB_ENV
 
-      - name: 'Check Existing Instance'
+      - name: 'Check Existing MySQL Database'
         run: |
-          echo "INSTANCE_OCID=$( \
-            oci compute instance list \
-            --lifecycle-state RUNNING \
+          echo "MySQL_OCID=$( \
+            oci mysql db-system list \
+            --lifecycle-state ACTIVE \
             --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
-            --display-name cicd-demo \
-            --query "data [0].id" \
+            --display-name pramudyapolinema_cicd \
+            --query "data [0].endpoint [0].ip-address" \
             --raw-output \
             )" >> $GITHUB_ENV
+
+      - name: 'Get MySQL IP'
+        run: |
+          echo "MySQL_IP=$( \
+            oci mysql db-system list \
+            --compartment-id ${{env.MySQL_OCID}} \
+            --query 'data[0].endpoints[0]."ip-address"' \
+            --raw-output \
+            )" >> $GITHUB_ENV
+
       - name: 'Create Instance'
         if: ${{!env.INSTANCE_OCID}}
         run: |
@@ -140,5 +150,3 @@ jobs:
             sudo firewall-cmd --reload
             sudo docker-compose up -d
             sudo docker-compose exec -T system_sales ./laravel.sh
-
-
