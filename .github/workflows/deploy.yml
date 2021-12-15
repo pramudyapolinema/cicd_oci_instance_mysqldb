@@ -142,5 +142,5 @@ jobs:
             sudo docker-compose exec -T system_sales cp .env.example .env
             sudo docker-compose exec -T system_sales chmod 777 .env
             sudo docker-compose exec -T system_sales mysql -u ${{secrets.DB_USERNAME}} -p${{secrets.DB_PASSWORD}} -h ${{env.MySQL_IP}} -e "CREATE DATABASE IF NOT EXISTS system_sales"
-            sudo docker exec -it system_sales bash -c "echo -e 'DB_HOST=${{env.MySQL_IP}}\nDB_USERNAME=${{secrets.DB_USERNAME}}\nDB_PASSWORD=${{secrets.DB_PASSWORD}}' >> .env"
+            sudo docker exec -i system_sales bash -c "echo -e 'DB_HOST=${{env.MySQL_IP}}\nDB_USERNAME=${{secrets.DB_USERNAME}}\nDB_PASSWORD=${{secrets.DB_PASSWORD}}' >> .env"
             sudo docker-compose exec -T system_sales ./laravel.sh
