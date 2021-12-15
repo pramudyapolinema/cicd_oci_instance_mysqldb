@@ -52,7 +52,7 @@ jobs:
             --lifecycle-state ACTIVE \
             --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
             --display-name pramudyapolinema_cicd \
-            --query 'data[0].id' \
+            --query 'data[0].endpoints[0]."ip-address"' \
             --raw-output \
             )" >> $GITHUB_ENV
       - name: 'Create MySQL Database'
