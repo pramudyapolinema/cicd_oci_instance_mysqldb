@@ -138,7 +138,6 @@ jobs:
             sudo systemctl restart docker
             sudo firewall-cmd --zone=docker --add-service=http --permanent
             sudo firewall-cmd --reload
-            sudo git clone
             sudo ./laravel.sh
 
 
