@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cp .env.example .env
+chmod 777 .env
 chmod -R 777 /var/www/html/storage/; \
 composer install; \
 php artisan key:generate; \
