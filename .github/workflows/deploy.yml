@@ -126,7 +126,6 @@ jobs:
         run: |
           echo "MySQL_IP=$( \
             oci mysql db-system list \
-            --lifecycle-state ACTIVE \
             --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
             --display-name system_sales \
             --query 'data[0].endpoints[0]."ip-address"' \
