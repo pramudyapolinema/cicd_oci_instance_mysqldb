@@ -66,7 +66,7 @@ jobs:
           --shape-name MySQL.VM.Standard.E3.1.8GB \
           --display-name system_sales \
           --subnet-id ${{secrets.VM_SUBNET_OCID}} \
-          --wait-for-state ACTIVE \
+          --wait-for-state ACCEPTED \
           --data-storage-size-in-gbs 50
       - name: 'Get MySQL Database IP'
         if: ${{!env.MySQL_IP}}
