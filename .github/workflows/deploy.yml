@@ -58,7 +58,7 @@ jobs:
       - name: 'Create MySQL Database'
         if: ${{!env.MySQL_ID}}
         run: |
-          echo "MYSQL_ID=$( \
+          echo "MySQL_ID=$( \
             oci mysql db-system create \
             --admin-password ${{ secrets.DB_PASSWORD }} \
             --admin-username ${{ secrets.DB_USERNAME }} \
