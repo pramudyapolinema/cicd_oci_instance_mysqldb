@@ -51,26 +51,30 @@ jobs:
             oci mysql db-system list \
             --lifecycle-state ACTIVE \
             --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
-            --display-name pramudyapolinema_cicd \
+            --display-name system_sales \
             --query 'data[0].endpoints[0]."ip-address"' \
             --raw-output \
             )" >> $GITHUB_ENV
       - name: 'Create MySQL Database'
         if: ${{!env.MySQL_IP}}
         run: |
+          oci mysql db-system create \
+          --admin-password ${{ secrets.DB_PASSWORD }} \
+          --admin-username ${{ secrets.DB_USERNAME }} \
+          -c ${{secrets.VM_COMPARTMENT_OCID}} \
+          --availability-domain ${{secrets.VM_AVAILABILITY_DOMAIN}} \
+          --shape-name MySQL.VM.Standard.E3.1.8GB \
+          --display-name system_sales \
+          --subnet-id ${{secrets.VM_SUBNET_OCID}} \
+          --wait-for-state SUCCEEDED \
+          --data-storage-size-in-gbs 50
           echo "MySQL_IP=$( \
-            oci mysql db-system create \
-            --admin-password ${{ secrets.DB_PASSWORD }} \
-            --admin-username ${{ secrets.DB_USERNAME }} \
-            -c ${{secrets.VM_COMPARTMENT_OCID}} \
-            --availability-domain ${{secrets.VM_AVAILABILITY_DOMAIN}} \
-            --shape-name MySQL.VM.Standard.E3.1.8GB \
-            --display-name pramudyapolinema_cicd \
-            --subnet-id ${{secrets.VM_SUBNET_OCID}} \
-            --wait-for-state SUCCEEDED \
-            --query 'data.endpoints[0]."ip-address"' \
+            oci mysql db-system list \
+            --lifecycle-state ACTIVE \
+            --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
+            --display-name system_sales \
+            --query 'data[0].endpoints[0]."ip-address"' \
             --raw-output \
-            --data-storage-size-in-gbs 50 \
             )" >> $GITHUB_ENV
 
       - name: 'Check Existing Instance'
@@ -79,7 +83,7 @@ jobs:
             oci compute instance list \
             --lifecycle-state RUNNING \
             --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
-            --display-name cicd-demo \
+            --display-name system_sales \
             --query "data [0].id" \
             --raw-output \
             )" >> $GITHUB_ENV
@@ -93,7 +97,7 @@ jobs:
             --shape ${{secrets.VM_SHAPE}} \
             --shape-config '{"memoryInGBs": 1, "ocpus": 1}' \
             --assign-public-ip true \
-            --display-name cicd-demo \
+            --display-name system_sales \
             --image-id ${{secrets.VM_CUSTOM_IMAGE_OCID}} \
             --ssh-authorized-keys-file /home/runner/.oci/oci_api_key_public.pem \
             --subnet-id ${{secrets.VM_SUBNET_OCID}} \
