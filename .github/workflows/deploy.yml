@@ -47,27 +47,39 @@ jobs:
 
       - name: 'Check Existing MySQL Database'
         run: |
-          echo "MySQL_IP=$( \
+          echo "MySQL_ID=$( \
             oci mysql db-system list \
             --lifecycle-state ACTIVE \
             --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
             --display-name system_sales \
-            --query 'data[0].endpoints[0]."ip-address"' \
+            --query 'data[0].id' \
             --raw-output \
             )" >> $GITHUB_ENV
       - name: 'Create MySQL Database'
-        if: ${{!env.MySQL_IP}}
+        if: ${{!env.MySQL_ID}}
         run: |
-          oci mysql db-system create \
-          --admin-password ${{ secrets.DB_PASSWORD }} \
-          --admin-username ${{ secrets.DB_USERNAME }} \
-          -c ${{secrets.VM_COMPARTMENT_OCID}} \
-          --availability-domain ${{secrets.VM_AVAILABILITY_DOMAIN}} \
-          --shape-name MySQL.VM.Standard.E3.1.8GB \
-          --display-name system_sales \
-          --subnet-id ${{secrets.VM_SUBNET_OCID}} \
-          --wait-for-state SUCCEEDED \
-          --data-storage-size-in-gbs 50
+          echo "MYSQL_ID=$( \
+            oci mysql db-system create \
+            --admin-password ${{ secrets.DB_PASSWORD }} \
+            --admin-username ${{ secrets.DB_USERNAME }} \
+            -c ${{secrets.VM_COMPARTMENT_OCID}} \
+            --availability-domain ${{secrets.VM_AVAILABILITY_DOMAIN}} \
+            --shape-name MySQL.VM.Standard.E3.1.8GB \
+            --display-name system_sales \
+            --subnet-id ${{secrets.VM_SUBNET_OCID}} \
+            --wait-for-state SUCCEEDED \
+            --query 'data.id' \
+            --raw-output \
+            --data-storage-size-in-gbs 50 \
+          )" >> $GITHUB_ENV
+      - name: 'Get MySQL Database IP'
+        run: |
+          echo "MySQL_IP=$( \
+            oci mysql db-system get \
+            --db-system-id ${{env.MYSQL_ID}} \
+            --query 'data."ip-address"' \
+            --raw-output \
+            )" >> $GITHUB_ENV
 
       - name: 'Check Existing Instance'
         run: |
@@ -121,16 +133,7 @@ jobs:
           source: "docker-compose.yaml"
           target: "./"
 
-      - name: 'Get MySQL Database IP'
-        if: ${{!env.MySQL_IP}}
-        run: |
-          echo "MySQL_IP=$( \
-            oci mysql db-system list \
-            --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
-            --display-name system_sales \
-            --query 'data[0].endpoints[0]."ip-address"' \
-            --raw-output \
-            )" >> $GITHUB_ENV
+
 
       - name: 'Running Docker Compose'
         uses: appleboy/ssh-action@master
