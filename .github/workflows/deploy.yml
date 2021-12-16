@@ -68,6 +68,9 @@ jobs:
           --subnet-id ${{secrets.VM_SUBNET_OCID}} \
           --wait-for-state SUCCEEDED \
           --data-storage-size-in-gbs 50
+      - name: 'Get MySQL Database IP'
+        if: ${{!env.MySQL_IP}}
+        run: |
           echo "MySQL_IP=$( \
             oci mysql db-system list \
             --lifecycle-state ACTIVE \
@@ -143,12 +146,10 @@ jobs:
             sudo firewall-cmd --zone=docker --add-service=http --permanent
             sudo firewall-cmd --reload
             sudo docker-compose up -d
-            if [! -e ".env"]; then
             sudo docker-compose exec -T system_sales cp .env.example .env
             sudo docker-compose exec -T system_sales chmod 777 .env
             sudo docker-compose exec -T system_sales mysql -u ${{secrets.DB_USERNAME}} -p${{secrets.DB_PASSWORD}} -h ${{env.MySQL_IP}} -e "CREATE DATABASE IF NOT EXISTS system_sales"
             sudo docker exec -i system_sales bash -c "echo -e 'DB_HOST=${{env.MySQL_IP}}\nDB_USERNAME=${{secrets.DB_USERNAME}}\nDB_PASSWORD=${{secrets.DB_PASSWORD}}' >> .env"
             sudo docker exec -i system_sales bash -c "echo -e 'ORACLE_ACCESS_KEY=${{secrets.ORACLE_ACCESS_KEY}}\nORACLE_SECRET_KEY=${{secrets.ORACLE_SECRET_KEY}}\nORACLE_DEFAULT_REGION=${{secrets.ORACLE_DEFAULT_REGION}}\nORACLE_NAMESPACE=${{secrets.ORACLE_NAMESPACE}}' >> .env"
             sudo docker exec -i system_sales bash -c "echo -e 'RAJAONGKIR_API_KEY=${{secrets.RAJAONGKIR_API_KEY}}' >> .env"
-            fi
             sudo docker-compose exec -T system_sales ./laravel.sh
