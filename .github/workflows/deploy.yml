@@ -68,7 +68,7 @@ jobs:
             --display-name pramudyapolinema_cicd \
             --subnet-id ${{secrets.VM_SUBNET_OCID}} \
             --wait-for-state SUCCEEDED \
-            --query 'data[0].endpoints[0]."ip-address"' \
+            --query 'data.endpoints[0]."ip-address"' \
             --raw-output \
             --data-storage-size-in-gbs 50 \
             )" >> $GITHUB_ENV
