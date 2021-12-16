@@ -66,19 +66,8 @@ jobs:
           --shape-name MySQL.VM.Standard.E3.1.8GB \
           --display-name system_sales \
           --subnet-id ${{secrets.VM_SUBNET_OCID}} \
-          --wait-for-state ACCEPTED \
+          --wait-for-state SUCCEEDED \
           --data-storage-size-in-gbs 50
-      - name: 'Get MySQL Database IP'
-        if: ${{!env.MySQL_IP}}
-        run: |
-          echo "MySQL_IP=$( \
-            oci mysql db-system list \
-            --lifecycle-state ACTIVE \
-            --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
-            --display-name system_sales \
-            --query 'data[0].endpoints[0]."ip-address"' \
-            --raw-output \
-            )" >> $GITHUB_ENV
 
       - name: 'Check Existing Instance'
         run: |
@@ -131,6 +120,18 @@ jobs:
           key: ${{ secrets.OCI_KEY_FILE }}
           source: "docker-compose.yaml"
           target: "./"
+
+      - name: 'Get MySQL Database IP'
+        if: ${{!env.MySQL_IP}}
+        run: |
+          echo "MySQL_IP=$( \
+            oci mysql db-system list \
+            --lifecycle-state ACTIVE \
+            --compartment-id ${{secrets.VM_COMPARTMENT_OCID}} \
+            --display-name system_sales \
+            --query 'data[0].endpoints[0]."ip-address"' \
+            --raw-output \
+            )" >> $GITHUB_ENV
 
       - name: 'Running Docker Compose'
         uses: appleboy/ssh-action@master
