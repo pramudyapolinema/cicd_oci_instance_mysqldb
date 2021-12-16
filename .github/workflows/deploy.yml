@@ -75,8 +75,8 @@ jobs:
       - name: 'Get MySQL Database IP'
         run: |
           echo "MySQL_IP=$( \
-            oci mysql db-system get ${{env.MySQL_ID}} \
-            --db-system-id ${{env.MYSQL_ID}} \
+            oci mysql db-system get \
+            --db-system-id ${{env.MySQL_ID}} \
             --query 'data."ip-address"' \
             --raw-output \
             )" >> $GITHUB_ENV
