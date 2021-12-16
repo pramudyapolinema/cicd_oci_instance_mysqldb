@@ -75,7 +75,7 @@ jobs:
       - name: 'Get MySQL Database IP'
         run: |
           echo "MySQL_IP=$( \
-            oci mysql db-system get \
+            oci mysql db-system get ${{env.MySQL_ID}} \
             --db-system-id ${{env.MYSQL_ID}} \
             --query 'data."ip-address"' \
             --raw-output \
