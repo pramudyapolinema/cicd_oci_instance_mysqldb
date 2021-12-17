@@ -161,5 +161,5 @@ jobs:
             echo -e "ORACLE_ACCESS_KEY=${{secrets.ORACLE_ACCESS_KEY}}\nORACLE_SECRET_KEY=${{secrets.ORACLE_SECRET_KEY}}\nORACLE_DEFAULT_REGION=${{secrets.ORACLE_DEFAULT_REGION}}\nORACLE_NAMESPACE=${{secrets.ORACLE_NAMESPACE}}" >> .env;
             echo -e "RAJAONGKIR_API_KEY=${{secrets.RAJAONGKIR_API_KEY}}" >> .env;
             ./laravel.sh;
-            fi
+            fi /
             '
