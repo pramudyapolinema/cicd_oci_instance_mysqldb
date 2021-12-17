@@ -165,6 +165,12 @@ jobs:
             composer install
             php artisan key:generate
             php artisan migrate
+            fi '
+            sudo docker exec -i system_sales bash -c '
+            file=`mysql -u ${{secrets.DB_USERNAME}} -p${{secrets.DB_PASSWORD}} -h ${{env.MySQL_IP}} system_sales -e "SELECT COUNT(*) as count FROM users"  | cut -d \t -f 2`
+            if [ $file == "0" ]; then
             php artisan db:seed --class=LocationSeeder
             php artisan db:seed --class=UserSeeder
             fi '
+
+
